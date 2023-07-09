@@ -17,7 +17,7 @@ class MoviePredicter(Resource):
     def post(self):
         args = parser.parse_args()
         X = np.array(json.loads(args['data']))
-        prediction = model.predictRating(X)
+        prediction = model.generateMovieSuggestions(X)
         return jsonify(prediction.tolist())
 
 api.add_resource(MoviePredicter, '/predict')
