@@ -3,6 +3,7 @@ from flask_restful import Api, Resource, reqparse
 import pickle
 import numpy as np
 import json
+import movie_predict
 
 app = Flask(__name__)
 api = Api(app)
@@ -16,14 +17,14 @@ class MoviePredicter(Resource):
     def post(self):
         args = parser.parse_args()
         X = np.array(json.loads(args['data']))
-        prediction = model.predict(X)
+        prediction = model.predictRating(X)
         return jsonify(prediction.tolist())
 
 api.add_resource(MoviePredicter, '/predict')
 
 if __name__ == '__main__':
     # Load model
-    with open('model.pickle', 'rb') as f:
+    with open('model.pkl', 'rb') as f:
         model = pickle.load(f)
-
+    print('Model loaded')
     app.run(debug=True)
