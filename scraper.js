@@ -27,12 +27,15 @@
             }
         }
         console.log(reviewedMovieObjs);
+        const exampleData = ["inception", "inception 2", "donnie darko"]
+        addResults(exampleData)
         return reviewedMovieObjs;
     }
 
     function addButton(text, onclick, cssObj) {
         cssObj = cssObj || {position: 'absolute', bottom: '7%', left:'4%', 'z-index': 3}
         let button = document.createElement('button'), btnStyle = button.style
+        button.className = "childButton"
         document.body.appendChild(button)
         button.innerHTML = text
         button.onclick = onclick
@@ -42,10 +45,20 @@
     }
 
 
-    function addResults(text_arr) {
+    function addResults(text_arr, cssObj) {
         cssObj = {position: 'absolute', bottom: '7%', left:'4%', 'z-index': 3}
-        let button = document.querySelector(button)
-        button.style.display("none")
+        let div = document.createElement('div'), divStyle = div.style
+        div.className = "results"
+        document.body.appendChild(div)
+        Object.keys(cssObj).forEach(key => divStyle[key] = cssObj[key])
+        let button = document.querySelector(".childButton")
+        button.style.display = "none"
+        for (let i = 0; i < text_arr.length; i++) {
+            let current = document.createElement('p')
+            document.querySelector(".results").appendChild(current)
+            current.innerHTML = text_arr[i]
+        }
+        return div
     }
 
 })();
