@@ -6,6 +6,7 @@ import pickle
 # Load the datasets
 train = pd.read_csv('train.csv')
 test = pd.read_csv('test.csv')
+metadata = pd.read_csv('movies_metadata.csv')
 
 # Data Pre-processing, extracting movie and user id's and grouping
 train['user_id'], train['movie_id'] = zip(*train['userId_movieId'].str.split('_'))
@@ -58,7 +59,6 @@ def predictRating(user, item, rating):
 trainPredictions = [predictRating(d.user_id, d.movie_id, d.rating) for d in train.itertuples()]
 trainLabels = train['rating']
 
-# Generate Movie Suggestions
 def generateMovieSuggestions(user_id, input_movies, train_df, num_suggestions=5):
     # Check if user_id exists in the training dataset
     if user_id not in itemsPerUser:
@@ -81,13 +81,29 @@ def generateMovieSuggestions(user_id, input_movies, train_df, num_suggestions=5)
     suggestions = [movie for _, movie in similarities[:num_suggestions]]  # Extract movie suggestions
     return suggestions
 
+# Example usage
+user_id = '588'  # Replace with the user ID
+input_movies = [('101', 0.93), ('1019', 0.85), ('987', 0.75), ('52', 0.68)]  # Replace with the input movie IDs and ratings
+suggestions = generateMovieSuggestions(user_id, input_movies, train, num_suggestions=5)
+
+#Convert suggestions to integers
+movie_ids = [int(x) for x in suggestions]
+
+df_metadata = pd.DataFrame({'id': metadata['id'], 'name': metadata['original_title']})
+filtered_df = df_metadata[df_metadata['id'].isin(movie_ids)]
+
+# Create a dictionary mapping movie IDs to names
+id_to_name_dict = filtered_df.set_index('id')['name'].to_dict()
+
+# Retrieve the matched movie names
+suggested_movie_names = [id_to_name_dict.get(movie_id) for movie_id in movie_ids]
+
+# Print the suggested movie names
+print("Suggested Movie Names:")
+for movie_name in suggested_movie_names:
+    if movie_name != None:
+        print(movie_name)
+
 # Save Model
 pickle.dump(predictRating, open('model.pkl', 'wb'))
-
-# Test
-user_id = 'user123'  # Replace with the user ID
-input_movies = [('123', 0.93), ('456', 0.85), ('789', 0.75)]  # Replace with the input movie IDs and ratings
-suggestions = generateMovieSuggestions(user_id, input_movies, train, num_suggestions=5)
-print(f"Movie Suggestions for '{user_id}':")
-for movie in suggestions:
-    print(movie)
+pickle.dump(suggested_movie_names, open('suggested_movie_names.pkl', 'wb'))
