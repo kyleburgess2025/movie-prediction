@@ -3,15 +3,6 @@ import numpy as np
 import pandas as pd
 import pickle
 
-# Example input data from API
-# [
-#     {"name": "american-psycho", "rating": 8},
-#     {"name": "the-dark-knight", "rating": 5},
-#     {"name": "the-dark-knight-rises", "rating": 4},
-#     {"name": "inception", "rating": 9},
-# ]
-#anyway to get a list of movies to watch from this data?
-
 # Load the datasets
 train = pd.read_csv('train.csv')
 test = pd.read_csv('test.csv')
