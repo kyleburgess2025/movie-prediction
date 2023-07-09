@@ -8,7 +8,7 @@ from sklearn.metrics import mean_squared_error
 train = pd.read_csv('train.csv')
 test = pd.read_csv('test.csv')
 
-# Data Pre-processing
+# Data Pre-processing, extracting movie and user id's and grouping
 train['user_id'], train['movie_id'] = zip(*train['userId_movieId'].str.split('_'))
 usersPerItem = train.groupby('movie_id')['user_id'].apply(set).to_dict()
 itemsPerUser = train.groupby('user_id')['movie_id'].apply(set).to_dict()
@@ -19,12 +19,13 @@ ratingMean = train['rating'].mean()
 userAverages = {u: train.loc[train['user_id'] == u, 'rating'].mean() for u in itemsPerUser}
 itemAverages = {i: train.loc[train['movie_id'] == i, 'rating'].mean() for i in usersPerItem}
 
-def jaccard(s1, s2):
-    numer = len(s1.intersection(s2))
-    denom = len(s1.union(s2))
-    if denom == 0:
+# Using Jaccard similarity 
+def jaccard(A, B):
+    num = len(A.intersection(B))
+    den = len(A.union(B))
+    if den == 0:
         return 0
-    return numer / denom
+    return num / den
 
 def mostSimilar(i, N):
     similarities = []
@@ -37,7 +38,7 @@ def mostSimilar(i, N):
     similarities.sort(reverse=True)
     return similarities[:N]
 
-def predictRating(user, item):
+def predictRating(user, item, rating):
     ratings = []
     similarities = []
     for d in train.loc[train['user_id'] == user].itertuples():
@@ -54,22 +55,27 @@ def predictRating(user, item):
         return ratingMean
 
 # Model Evaluation
-trainPredictions = [predictRating(d.user_id, d.movie_id) for d in train.itertuples()]
+trainPredictions = [predictRating(d.user_id, d.movie_id, d.rating) for d in train.itertuples()]
 trainLabels = train['rating']
-trainRMSE = mean_squared_error(trainPredictions, trainLabels, squared=False)
-print(f"Train RMSE: {trainRMSE:.4f}")
+
+#For references: RMSE is 0.1606
+#trainRMSE = mean_squared_error(trainPredictions, trainLabels, squared=False)
+#print(f"Train RMSE: {trainRMSE:.4f}")
 
 # Generate Movie Suggestions
-def generateMovieSuggestions(movie_id, num_suggestions=10):
+def generateMovieSuggestions(movie_id, rating, num_suggestions=5):
     similar_movies = mostSimilar(movie_id, num_suggestions)
-    return [movie for _, movie in similar_movies]
+    suggestions = [(movie, predictRating('user_id', movie, rating)) for _, movie in similar_movies]
+    suggestions.sort(key=lambda x: x[1], reverse=True)  # Sort suggestions by predicted rating
+    return suggestions[:num_suggestions]  # Return only the highest rated movies
 
 # Save the Trained Model
 pickle.dump(predictRating, open('model.pkl', 'wb'))
 
-# Example usage
+# Example, user provides a movie they watched and the rating they gave it
 movie_id = '123'  # Replace with the movie ID for which you want suggestions
-suggestions = generateMovieSuggestions(movie_id)
+rating = 0.93
+suggestions = generateMovieSuggestions(movie_id, rating)
 print(f"Movie Suggestions for '{movie_id}':")
-for movie in suggestions:
-    print(movie)
+for movie, predicted_rating in suggestions:
+    print(f"Movie: {movie} | Predicted Rating: {predicted_rating:.2f}")
