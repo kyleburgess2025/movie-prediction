@@ -24,6 +24,10 @@ FlickPicks brings innovation to the movie recommendation landscape by providing 
 
 Through its collaborative filtering approach and focus on wellness, FlickPicks revolutionizes the way users find movies to watch, ensuring a personalized and enjoyable movie-watching experience.
 
+## Demo
+
+Watch our demo here: https://youtu.be/36JUCBAaVP8
+
 ## FAQ
 
 #### Q: Can FlickPicks recommend movies from different genres?
