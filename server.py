@@ -1,29 +1,40 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_restful import Api, Resource, reqparse
 import pickle
 import numpy as np
 import json
+import movie_predict
+import requests
+from bs4 import BeautifulSoup
 
 app = Flask(__name__)
-api = Api(app)
 
-# Create parser for the payload data
-parser = reqparse.RequestParser()
-parser.add_argument('data')
+@app.route('/predict', methods=['POST'])
+def process_json():
+    content_type = request.headers.get('Content-Type')
+    if (content_type == 'application/json'):
+        json = request.get_json()
+        X = json["data"]
+        print(X)
+        user_id = json["user_id"]
+        
+        prediction = movie_predict.generateMovieSuggestions(user_id, X)
+        prediction = [getMovieById(id) for id in prediction]
+        return jsonify(prediction)
+    else:
+        return 'Content-Type not supported!'
 
-# Define how the api will respond to the post requests
-class MoviePredicter(Resource):
-    def post(self):
-        args = parser.parse_args()
-        X = np.array(json.loads(args['data']))
-        prediction = model.predict(X)
-        return jsonify(prediction.tolist())
 
-api.add_resource(MoviePredicter, '/predict')
 
 if __name__ == '__main__':
     # Load model
-    with open('model.pickle', 'rb') as f:
+    with open('model.pkl', 'rb') as f:
         model = pickle.load(f)
+    print('Model loaded')
+    app.run(debug=True, port=3000)
 
-    app.run(debug=True)
+def getMovieById(id):
+    base = "https://letterboxd.com/tmdb/" + id
+    response = requests.get(base)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    return soup.find('h1', class_='headline-1').text

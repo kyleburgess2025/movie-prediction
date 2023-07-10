@@ -3,6 +3,15 @@ import numpy as np
 import pandas as pd
 import pickle
 
+# Example input data from API
+# [
+#     {"name": "american-psycho", "rating": 8},
+#     {"name": "the-dark-knight", "rating": 5},
+#     {"name": "the-dark-knight-rises", "rating": 4},
+#     {"name": "inception", "rating": 9},
+# ]
+#anyway to get a list of movies to watch from this data?
+
 # Load the datasets
 train = pd.read_csv('train.csv')
 test = pd.read_csv('test.csv')
@@ -59,19 +68,23 @@ def predictRating(user, item, rating):
 trainPredictions = [predictRating(d.user_id, d.movie_id, d.rating) for d in train.itertuples()]
 trainLabels = train['rating']
 
-def generateMovieSuggestions(user_id, input_movies, train_df, num_suggestions=5):
+
+# Generate Movie Suggestions
+def generateMovieSuggestions(user_id, input_movies, train_df=train, num_suggestions=5):
     # Check if user_id exists in the training dataset
     if user_id not in itemsPerUser:
         # Create a new DataFrame with the input movies and ratings
-        new_rows = [{'user_id': user_id, 'movie_id': movie_id, 'rating': rating} for movie_id, rating in input_movies]
+        print(input_movies)
+        print(user_id)
+        new_rows = [[user_id, movie_id, rating] for movie_id, rating in input_movies.items()]
         new_df = pd.DataFrame(new_rows)
         # Concatenate the new DataFrame with the existing train_df
         train_df = pd.concat([train_df, new_df], ignore_index=True)
         # Update the itemsPerUser dictionary with the new user_id
-        itemsPerUser[user_id] = set([movie_id for movie_id, _ in input_movies])
+        itemsPerUser[user_id] = set([movie_id for movie_id, _ in input_movies.items()])
     
     similarities = []
-    for movie_id, rating in input_movies:
+    for movie_id, rating in input_movies.items():
         similar_movies = mostSimilar(movie_id, num_suggestions)
         suggestions = [(movie, predictRating(user_id, movie, rating)) for _, movie in similar_movies]
         suggestions.sort(key=lambda x: x[1], reverse=True)  # Sort suggestions by predicted rating
@@ -104,6 +117,5 @@ for movie_name in suggested_movie_names:
     if movie_name != None:
         print(movie_name)
 
-# Save Model
-pickle.dump(predictRating, open('model.pkl', 'wb'))
+
 pickle.dump(suggested_movie_names, open('suggested_movie_names.pkl', 'wb'))
