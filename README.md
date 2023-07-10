@@ -30,4 +30,10 @@ Through its collaborative filtering approach and focus on wellness, FlickPicks r
 A: To evaluate the accuracy of predictions, we used a test dataset (test.csv) containing actual movie ratings. The model achieved an RMSE (Root Mean Squared Error) score of 0.1606 when comparing the predicted ratings against the actual ratings. This indicates a reasonably accurate prediction performance.
 
 ## Future Plans
-If we had more time, we would like to enhance FlickPicks by incorporating movie metadata such as revenue and synopsis. By integrating movie metadata, we can create a hybrid model that combines collaborative filtering with content-based filtering. This hybrid approach would provide even better movie recommendations by taking into account both user preferences and movie characteristics. 
+
+If we had more time, we would like to enhance FlickPicks with the following features:
+
+1. Incorporating Movie Metadata: Integrate movie metadata such as revenue and synopsis into FlickPicks. By leveraging movie characteristics, we can create a hybrid model that combines collaborative filtering with content-based filtering. This hybrid approach will provide even better movie recommendations by taking into account both user preferences and movie attributes.
+  
+2. Natural Language Processing (NLP) Analysis of User Reviews: Analyze user comments using NLP techniques to identify common themes or tropes in user reviews. The extension would analyze frequently used words and phrases in positive or negative reviews, gaining insights into user sentiment and preferences. 
+
