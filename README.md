@@ -26,8 +26,14 @@ Through its collaborative filtering approach and focus on wellness, FlickPicks r
 
 ## FAQ
 
+#### Q: Can FlickPicks recommend movies from different genres?
+A: Yes, FlickPicks can recommend movies from a wide range of genres. Our dataset includes over 40,000!
+
 #### Q: How accurate are the predictions made by FlickPicks?
 A: To evaluate the accuracy of predictions, we used a test dataset (test.csv) containing actual movie ratings. The model achieved an RMSE (Root Mean Squared Error) score of 0.1606 when comparing the predicted ratings against the actual ratings. This indicates a reasonably accurate prediction performance.
+
+#### Q: Where does the dataset used by FlickPicks originate from?
+A: The dataset used by FlickPicks is sourced from open-source datasets that were recycled from a past project. These datasets contain over 40,000 examples and provide a diverse range of movie ratings and information.
 
 ## Future Plans
 
