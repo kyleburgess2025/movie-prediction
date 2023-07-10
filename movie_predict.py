@@ -68,19 +68,21 @@ trainPredictions = [predictRating(d.user_id, d.movie_id, d.rating) for d in trai
 trainLabels = train['rating']
 
 # Generate Movie Suggestions
-def generateMovieSuggestions(user_id, input_movies, train_df, num_suggestions=5):
+def generateMovieSuggestions(user_id, input_movies, train_df=train, num_suggestions=5):
     # Check if user_id exists in the training dataset
     if user_id not in itemsPerUser:
         # Create a new DataFrame with the input movies and ratings
-        new_rows = [{'user_id': user_id, 'movie_id': movie_id, 'rating': rating} for movie_id, rating in input_movies]
+        print(input_movies)
+        print(user_id)
+        new_rows = [[user_id, movie_id, rating] for movie_id, rating in input_movies.items()]
         new_df = pd.DataFrame(new_rows)
         # Concatenate the new DataFrame with the existing train_df
         train_df = pd.concat([train_df, new_df], ignore_index=True)
         # Update the itemsPerUser dictionary with the new user_id
-        itemsPerUser[user_id] = set([movie_id for movie_id, _ in input_movies])
+        itemsPerUser[user_id] = set([movie_id for movie_id, _ in input_movies.items()])
     
     similarities = []
-    for movie_id, rating in input_movies:
+    for movie_id, rating in input_movies.items():
         similar_movies = mostSimilar(movie_id, num_suggestions)
         suggestions = [(movie, predictRating(user_id, movie, rating)) for _, movie in similar_movies]
         suggestions.sort(key=lambda x: x[1], reverse=True)  # Sort suggestions by predicted rating
@@ -95,7 +97,7 @@ pickle.dump(predictRating, open('model.pkl', 'wb'))
 
 # Test
 user_id = 'user123'  # Replace with the user ID
-input_movies = [('123', 0.93), ('456', 0.85), ('789', 0.75)]  # Replace with the input movie IDs and ratings
+input_movies = {'123': '0.93','456': '0.85','789': '0.75'}
 suggestions = generateMovieSuggestions(user_id, input_movies, train, num_suggestions=5)
 print(f"Movie Suggestions for '{user_id}':")
 for movie in suggestions:

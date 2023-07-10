@@ -16,20 +16,20 @@
 
     function helper() {
         const allMoviesWatched = document.querySelectorAll(".poster-container");
-        let reviewedMovieObjs = [];
+        let reviewedMovies = {};
         for (let i = 0; i < allMoviesWatched.length; i++) {
             const movieRating = allMoviesWatched[i].querySelector("p").querySelector(".rating")?.className;
             if (movieRating) {
-                const rating = movieRating.match(/(\d+)/)[0];
-                const name = allMoviesWatched[i].querySelector("div").getAttribute("data-film-link")?.replace("/film", "").replaceAll("/", "");
+                const rating = movieRating.match(/(\d+)/)[0]/10;
+                const name = allMoviesWatched[i].querySelector("div").getAttribute("data-film-id");
                 console.log(`${name}: ${rating}`);
-                reviewedMovieObjs.push({"rating": rating, "name": name});
+                reviewedMovies[name] = rating
             }
         }
-        console.log(reviewedMovieObjs);
+        console.log(reviewedMovies);
         const exampleData = ["inception", "inception 2", "donnie darko"]
         addResults(exampleData)
-        return reviewedMovieObjs;
+        return reviewedMovies;
     }
 
     function addButton(text, onclick, cssObj) {
@@ -46,7 +46,7 @@
 
 
     function addResults(text_arr, cssObj) {
-        cssObj = {position: 'absolute', bottom: '7%', left:'4%', 'z-index': 3}
+        cssObj = {position: 'absolute', bottom: '7%', left:'4%', 'z-index': 3, "background-color": 'white', "color": 'black'}
         let div = document.createElement('div'), divStyle = div.style
         div.className = "results"
         document.body.appendChild(div)
@@ -60,5 +60,4 @@
         }
         return div
     }
-
 })();
