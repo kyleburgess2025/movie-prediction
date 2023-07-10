@@ -84,7 +84,7 @@ def generateMovieSuggestions(user_id, input_movies, train_df=train, num_suggesti
         # Create a new DataFrame with the input movies and ratings
         print(input_movies)
         print(user_id)
-        new_rows = [[user_id, get_movie_id(movie_id), rating] for movie_id, rating in input_movies]
+        new_rows = [[user_id, movie_id, rating] for movie_id, rating in input_movies]
         new_df = pd.DataFrame(new_rows)
         # Concatenate the new DataFrame with the existing train_df
         train_df = pd.concat([train_df, new_df], ignore_index=True)
@@ -93,7 +93,7 @@ def generateMovieSuggestions(user_id, input_movies, train_df=train, num_suggesti
     
     similarities = []
     for movie_id, rating in input_movies:
-        similar_movies = mostSimilar(get_movie_id(movie_id), num_suggestions)
+        similar_movies = mostSimilar(movie_id, num_suggestions)
         suggestions = [(movie, predictRating(user_id, movie, rating)) for _, movie in similar_movies]
         suggestions.sort(key=lambda x: x[1], reverse=True)  # Sort suggestions by predicted rating
         similarities.extend(similar_movies)
@@ -104,7 +104,7 @@ def generateMovieSuggestions(user_id, input_movies, train_df=train, num_suggesti
 
 # Example usage
 user_id = '588'  # Replace with the user ID
-input_movies = [('Ratatouille', 0.93), ('Fantastic Mr. Fox', 0.85), ('Fight Club', 0.75), ('Inception', 0.68)]  # Replace with the input movie IDs and ratings
+input_movies = [('101', 0.93), ('1019', 0.85), ('987', 0.75), ('52', 0.68)]  # Replace with the input movie IDs and ratings
 suggestions = generateMovieSuggestions(user_id, input_movies, train, num_suggestions=5)
 
 #Convert suggestions to integers
