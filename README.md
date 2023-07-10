@@ -37,3 +37,7 @@ If we had more time, we would like to enhance FlickPicks with the following feat
   
 2. Natural Language Processing (NLP) Analysis of User Reviews: Analyze user comments using NLP techniques to identify common themes or tropes in user reviews. The extension would analyze frequently used words and phrases in positive or negative reviews, gaining insights into user sentiment and preferences. 
 
+## How to Run
+Download the TamperMonkey Chromium extension. Copy the contents of `scraper.js` into a new TamperMonkey script and enable the script for your browser. This will allow the script to scrape the contents of your Letterboxd when you are on your Watched Films page.
+
+Run the server in `server.py` by running `python3 server.py`. The server uses Flask to create a simple API with a single POST endpoint where the results of the model will be posted. This API is accessed in the scraper, and the results are displayed to your page using DOM manipulation. The model itself is defined in `move_predict.py` and uses Jaccard similarity to find the movies you are most likely to rate highest.

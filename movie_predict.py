@@ -68,28 +68,31 @@ def predictRating(user, item, rating):
 trainPredictions = [predictRating(d.user_id, d.movie_id, d.rating) for d in train.itertuples()]
 trainLabels = train['rating']
 
+def get_movie_id(movie_name):
+    movie_id = metadata.loc[metadata['title'] == movie_name, 'id'].values
+
+    if len(movie_id) > 0:
+        return movie_id[0]
+    else:
+        return None
+
 
 # Generate Movie Suggestions
 def generateMovieSuggestions(user_id, input_movies, train_df=train, num_suggestions=5):
     # Check if user_id exists in the training dataset
-    df_metadata = pd.DataFrame({'id': metadata['id'], 'name': metadata['original_title']})
-    id_arr = []
-    rating_arr = []
     if user_id not in itemsPerUser:
         # Create a new DataFrame with the input movies and ratings
         print(input_movies)
         print(user_id)
-        new_rows = [[user_id, df_metadata.loc[df_metadata['name'] == movie_name, 'id'].values, rating] for movie_name, rating in input_movies.items()]
+        new_rows = [[user_id, movie_id, rating] for movie_id, rating in input_movies]
         new_df = pd.DataFrame(new_rows)
         # Concatenate the new DataFrame with the existing train_df
         train_df = pd.concat([train_df, new_df], ignore_index=True)
         # Update the itemsPerUser dictionary with the new user_id
-        itemsPerUser[user_id] = set([movie_id for movie_id, _ in input_movies.items()])
+        itemsPerUser[user_id] = set([movie_id for movie_id, _ in input_movies])
     
     similarities = []
-    for movie_id, rating in zip(id_arr, rating_arr):
-        print(df_metadata.loc[df_metadata['name'] == movie_name, 'id'].values)
-        movie_id = df_metadata.loc[df_metadata['name'] == movie_name, 'id'].values
+    for movie_id, rating in input_movies:
         similar_movies = mostSimilar(movie_id, num_suggestions)
         suggestions = [(movie, predictRating(user_id, movie, rating)) for _, movie in similar_movies]
         suggestions.sort(key=lambda x: x[1], reverse=True)  # Sort suggestions by predicted rating
@@ -97,27 +100,31 @@ def generateMovieSuggestions(user_id, input_movies, train_df=train, num_suggesti
     similarities = list(set(similarities))  # Remove duplicates
     similarities.sort(reverse=True)  # Sort similarities in descending order
     suggestions = [movie for _, movie in similarities[:num_suggestions]]  # Extract movie suggestions
-    movie_ids = [int(x) for x in suggestions]
-    filtered_df = df_metadata[df_metadata['id'].isin(movie_ids)]
-
-    # Create a dictionary mapping movie IDs to names
-    print(movie_ids)
-    print(filtered_df)
-    id_to_name_dict = filtered_df.set_index('id')['name'].to_dict()
-
-    # Retrieve the matched movie names
-    suggested_movie_names = [id_to_name_dict.get(movie_id) for movie_id in movie_ids]
-    return suggested_movie_names
+    return suggestions
 
 # Example usage
 user_id = '588'  # Replace with the user ID
-input_movies = {'101': 0.93, '1019': 0.85,'987': 0.75, '52': 0.68}  # Replace with the input movie IDs and ratings
+input_movies = [('101', 0.93), ('1019', 0.85), ('987', 0.75), ('52', 0.68)]  # Replace with the input movie IDs and ratings
 suggestions = generateMovieSuggestions(user_id, input_movies, train, num_suggestions=5)
 
+#Convert suggestions to integers
+movie_ids = [int(x) for x in suggestions]
+
+df_metadata = pd.DataFrame({'id': metadata['id'], 'name': metadata['original_title']})
+filtered_df = df_metadata[df_metadata['id'].isin(movie_ids)]
+
+# Create a dictionary mapping movie IDs to names
+id_to_name_dict = filtered_df.set_index('id')['name'].to_dict()
+
+# Retrieve the matched movie names
+suggested_movie_names = [id_to_name_dict.get(movie_id) for movie_id in movie_ids]
+
+# Print the suggested movie names
 print("Suggested Movie Names:")
-for movie_name in suggestions:
+for movie_name in suggested_movie_names:
     if movie_name != None:
         print(movie_name)
 
 
-pickle.dump(suggestions, open('suggested_movie_names.pkl', 'wb'))
+pickle.dump(suggested_movie_names, open('suggested_movie_names.pkl', 'wb'))
+
