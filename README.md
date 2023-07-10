@@ -6,9 +6,9 @@ FlickPicks is a browser extension that addresses the pain point of finding movie
 ## Project Components
 FlickPicks consists of the following components:
 
-1. Collaborative Filtering: FlickPicks utilizes collaborative filtering to recommend movies to users. It leverages the Jaccard similarity measure to identify similar users based on their movie ratings. By finding users with similar tastes and preferences, FlickPicks suggests movies that those users have enjoyed but the current user hasn't watched yet.
+1. Collaborative Filtering: FlickPicks utilizes collaborative filtering to recommend movies to users. By finding users with similar tastes and preferences, FlickPicks suggests movies that those users have enjoyed but the current user hasn't watched yet.
 
-2. Jaccard Similarity: Jaccard similarity is used to measure the similarity between users. It compares the set of movies that users have rated, identifying the overlap and determining the similarity based on the ratio of shared movies to the total number of movies rated. This collaborative filtering approach is advantageous over content-based filtering as it relies on the collective wisdom of multiple users, allowing for serendipitous discoveries and recommendations beyond the limitations of content-based approaches.
+2. Jaccard Similarity: Jaccard similarity is used to measure the similarity between users. It compares the set of movies that users have rated, identifying the overlap and determining the similarity based on the ratio of shared movies to the total number of movies rated. 
 
 ## Promoting Wellness
 FlickPicks promotes wellness by offering movie suggestions that cater to different needs and moods. It enhances the movie-watching experience by recommending films that fall into the following categories:
