@@ -15,20 +15,23 @@
     addButton("see recommended movie", helper);
 
     function helper() {
+        const username = document.querySelector("body").getAttribute("data-owner");
         const allMoviesWatched = document.querySelectorAll(".poster-container");
         let reviewedMovies = {};
         for (let i = 0; i < allMoviesWatched.length; i++) {
             const movieRating = allMoviesWatched[i].querySelector("p").querySelector(".rating")?.className;
             if (movieRating) {
                 const rating = movieRating.match(/(\d+)/)[0]/10;
-                const name = allMoviesWatched[i].querySelector("div").getAttribute("data-film-id");
-                console.log(`${name}: ${rating}`);
+                const name = allMoviesWatched[i].querySelector("div").getAttribute('data-film-name')
+                console.log(name);
                 reviewedMovies[name] = rating
             }
         }
         console.log(reviewedMovies);
-        const exampleData = ["inception", "inception 2", "donnie darko"]
-        addResults(exampleData)
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://127.0.0.1:3000/predict", true);
+        xhr.send(JSON.stringify(reviewedMovies));
+        xhr.onreadystatechange = function() {addResults(JSON.parse(this.responseText))};
         return reviewedMovies;
     }
 
@@ -60,4 +63,5 @@
         }
         return div
     }
+
 })();
