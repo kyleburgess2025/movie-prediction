@@ -1,7 +1,7 @@
 # FlickPicks - Collaborative Filtering Movie Recommendation Extension
 
 ## Project Description
-FlickPicks is a browser extension that addresses the pain point of finding movies to watch, which can be time-consuming and frustrating. The extension uses collaborative filtering to generate personalized movie recommendations for users based on their preferences and the preferences of similar users.
+FlickPicks is a browser extension that addresses the pain point of finding movies to watch, which can be time-consuming and frustrating. The extension uses collaborative filtering to generate personalized movie suggestions for users based on their preferences and the preferences of similar users.
 
 ## Project Components
 FlickPicks consists of the following components:
@@ -23,3 +23,11 @@ FlickPicks promotes wellness by offering movie suggestions that cater to differe
 FlickPicks brings innovation to the movie recommendation landscape by providing a seamless browsing experience. Unlike traditional movie recommendation apps, FlickPicks operates as a browser extension, integrating with popular movie websites and platforms. By leveraging existing sites, FlickPicks eliminates the need for users to switch between different applications, making movie discovery and selection more convenient and efficient.
 
 Through its collaborative filtering approach and focus on wellness, FlickPicks revolutionizes the way users find movies to watch, ensuring a personalized and enjoyable movie-watching experience.
+
+## FAQ
+
+#### Q: How accurate are the predictions made by FlickPicks?
+A: To evaluate the accuracy of predictions, we used a test dataset (test.csv) containing actual movie ratings. The model achieved an RMSE (Root Mean Squared Error) score of 0.1606 when comparing the predicted ratings against the actual ratings. This indicates a reasonably accurate prediction performance.
+
+## Future Plans
+If we had more time, we would like to enhance FlickPicks by incorporating movie metadata such as revenue and synopsis. By integrating movie metadata, we can create a hybrid model that combines collaborative filtering with content-based filtering. This hybrid approach would provide even better movie recommendations by taking into account both user preferences and movie characteristics. 
